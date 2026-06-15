@@ -97,6 +97,7 @@
       flex-direction: column;
       gap: 1.25rem;
       padding-top: 0.5rem;
+      padding-left: 0.25rem;
     }
     .pd-eyebrow {
       font-family: var(--ff-body);
@@ -200,16 +201,33 @@
 
     /* ── Mobile: stack vertically ── */
     @media (max-width: 640px) {
+      .pd-breadcrumb {
+        padding: 0.75rem 1rem 0;
+      }
       .pd-inner {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 1rem 1rem 4rem;
+        gap: 0;
+        padding: 0.75rem 0 4rem;
       }
       .pd-img-wrap {
-        aspect-ratio: 4/5;
-        max-height: 70vw;
+        border-radius: 0;
+        aspect-ratio: 3/4;
+        max-height: none;
+        width: 100%;
+      }
+      .pd-details {
+        padding: 1.25rem 1rem 0;
+        gap: 1rem;
       }
       .pd-name { font-size: clamp(1.4rem, 6vw, 2rem); }
+      .pd-actions .btn {
+        padding: 0.85rem 1rem;
+        font-size: var(--fs-xs);
+      }
+      .pd-whatsapp {
+        margin: 0 1rem;
+        width: calc(100% - 2rem);
+      }
     }
 
     /* Navbar overflow fix */
