@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ruma's Sajghor – Saree Collection. From gossamer Chanderi to opulent Banarasi — discover sarees that drape your story with grace." />
+  <title>Saree Collection | Ruma's Sajghor</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    .cat-hero {
+      background: linear-gradient(135deg, var(--clr-blush-lt) 0%, var(--clr-white) 100%);
+      padding: calc(var(--nav-height) + 3rem) 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cat-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(247,200,208,0.4) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cat-hero-eyebrow {
+      font-family: var(--ff-body);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--clr-maroon);
+      margin-bottom: 0.6rem;
+      opacity: 0.8;
+    }
+    .cat-hero h1 {
+      font-family: var(--ff-display);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      color: var(--clr-maroon);
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+    .cat-hero p {
+      color: var(--clr-text-lt);
+      max-width: 520px;
+      margin: 0 auto 1.75rem;
+      line-height: 1.7;
+    }
+    .cat-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: var(--fs-xs);
+      color: var(--clr-maroon);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .cat-back-link:hover { opacity: 1; }
+  </style>
+  <style>
+    /* ── Animated Search Bar ── */
+    .nav-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--clr-maroon);
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .search-toggle:hover { background: var(--clr-blush-lt); }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      max-width: 0;
+      opacity: 0;
+      transition: max-width 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease, box-shadow 0.3s ease;
+      background: var(--clr-white);
+      border: 1.5px solid transparent;
+      border-radius: 24px;
+      box-shadow: none;
+      position: relative;
+    }
+
+    .nav-search.open .search-box {
+      max-width: 240px;
+      opacity: 1;
+      border-color: var(--clr-blush);
+      box-shadow: 0 2px 16px rgba(123,30,58,0.10);
+    }
+
+    .search-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--ff-body);
+      font-size: var(--fs-sm);
+      color: var(--clr-text);
+      padding: 0.45rem 0.75rem;
+      width: 200px;
+      min-width: 0;
+    }
+    .search-input::placeholder { color: var(--clr-text-lt); opacity: 0.7; }
+
+    .search-clear {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--clr-text-lt);
+      font-size: 13px;
+      padding: 0 0.6rem 0 0;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .search-clear:hover { color: var(--clr-maroon); }
+
+    /* Results dropdown */
+    .search-results {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 280px;
+      background: var(--clr-white);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      border: 1px solid var(--clr-blush);
+      z-index: 200;
+      overflow: hidden;
+      animation: dropIn 0.2s ease;
+    }
+    @keyframes dropIn {
+      from { opacity:0; transform:translateY(-8px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: var(--ff-body);
+      font-size: var(--fs-sm);
+      color: var(--clr-text);
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .search-result-item:hover { background: var(--clr-blush-lt); }
+    .search-result-item:not(:last-child) { border-bottom: 1px solid rgba(247,200,208,0.4); }
+
+    .sr-img {
+      width: 38px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: var(--clr-grey-lt);
+      flex-shrink: 0;
+    }
+    .sr-info { flex: 1; min-width: 0; }
+    .sr-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--clr-text); }
+    .sr-meta { font-size: var(--fs-xs); color: var(--clr-maroon); margin-top: 1px; }
+    .sr-cat  { font-size: var(--fs-xs); color: var(--clr-text-lt); }
+
+    .search-no-results {
+      padding: 1.25rem 1rem;
+      text-align: center;
+      font-size: var(--fs-sm);
+      color: var(--clr-text-lt);
+      font-family: var(--ff-body);
+    }
+
+    .search-highlight { color: var(--clr-maroon); font-weight: 600; }
+
+    @media (max-width: 600px) {
+      .nav-search.open .search-box { max-width: 160px; }
+      .search-input { width: 120px; }
+      .search-results { width: 240px; right: -20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <header class="navbar" id="navbar" role="banner">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Ruma's Sajghor Home">
+        <img src="logo.png" alt="Ruma's Sajghor Logo" class="logo-img" />
+        <div class="nav-brand-text">
+          <span class="nav-brand-name">Ruma's Sajghor</span>
+          <span class="nav-brand-tagline">Dress Your Story</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" id="navLinks" role="navigation" aria-label="Main navigation">
+        <a href="index.html#home"        class="nav-link">Home</a>
+        <a href="index.html#collections" class="nav-link">Collections</a>
+        <a href="index.html#about"       class="nav-link">About</a>
+        <a href="index.html#contact"     class="nav-link">Contact</a>
+      </nav>
+
+      
+      <!-- Animated Search Bar -->
+      <div class="nav-search" id="navSearch">
+        <button class="search-toggle" id="searchToggle" aria-label="Open search" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <div class="search-box" id="searchBox" role="search">
+          <input type="search" id="searchInput" class="search-input" placeholder="Search sarees, kurtis…" aria-label="Search products" autocomplete="off" />
+          <button class="search-clear" id="searchClear" aria-label="Clear search" hidden>✕</button>
+        </div>
+        <!-- Live results dropdown -->
+        <div class="search-results" id="searchResults" role="listbox" aria-label="Search results" hidden></div>
+      </div>
+
+      <button class="nav-wishlist-icon" id="navWishlistBtn" aria-label="View wishlist" onclick="location.href='wishlist.html'">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span class="wishlist-count" id="wishlistCount" hidden>0</span>
+      </button>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== CATEGORY HERO ========== -->
+  <section class="cat-hero" aria-label="Saree Collection collection hero">
+    <a href="index.html#collections" class="cat-back-link">← All Collections</a>
+    <p class="cat-hero-eyebrow">Timeless Elegance</p>
+    <h1>Saree Collection</h1>
+    <p>From gossamer Chanderi to opulent Banarasi — discover sarees that drape your story with grace.</p>
+    <div class="alpana-divider" aria-hidden="true" style="margin-top:1rem;">
+      <svg viewBox="0 0 600 30" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="15" x2="220" y2="15" stroke="#F7C8D0" stroke-width="1"/>
+        <circle cx="235" cy="15" r="3" fill="#7B1E3A" opacity="0.4"/>
+        <path d="M248,15 Q258,6 268,15 Q278,24 288,15 Q298,6 308,15 Q318,24 328,15 Q338,6 348,15" stroke="#7B1E3A" stroke-width="1.2" fill="none" opacity="0.5"/>
+        <circle cx="362" cy="15" r="3" fill="#7B1E3A" opacity="0.4"/>
+        <line x1="377" y1="15" x2="600" y2="15" stroke="#F7C8D0" stroke-width="1"/>
+        <g transform="translate(300,15)" opacity="0.6">
+          <ellipse cx="0" cy="-5" rx="3" ry="6" fill="#F7C8D0" transform="rotate(-30)"/>
+          <ellipse cx="0" cy="-5" rx="3" ry="6" fill="#F7C8D0"/>
+          <ellipse cx="0" cy="-5" rx="3" ry="6" fill="#F7C8D0" transform="rotate(30)"/>
+          <circle cx="0" cy="0" r="2.5" fill="#7B1E3A"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ========== COLLECTIONS ========== -->
+  <section class="collections" id="collections" aria-label="Saree Collection products" style="padding-top:3rem;">
+    <!-- Product Grid -->
+    <div class="products-grid" id="productsGrid" aria-live="polite">
+
+      <article class="product-card fade-in" data-category="Saree">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500&auto=format&fit=crop&q=75" alt="Chanderi Silk Saree" loading="lazy" />
+          <span class="category-badge">Saree</span>
+          <button class="card-wishlist-btn" aria-label="Add to wishlist" data-name="Chanderi Silk Saree" data-price="₹3,299" data-img="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&auto=format&fit=crop&q=80">♡</button>
+        </div>
+        <div class="card-body">
+          <h3 class="card-name">Chanderi Silk Saree</h3>
+          <p class="card-desc">Handwoven chanderi with delicate zari borders — grace personified.</p>
+          <p class="card-price">₹3,299</p>
+          <button class="btn btn-outline view-details"
+            data-name="Chanderi Silk Saree"
+            data-desc="Handwoven in Madhya Pradesh, this Chanderi silk saree features a gossamer-light weave with delicate zari borders and traditional motifs. The soft drape makes it perfect for festivals, weddings, and cultural gatherings."
+            data-price="₹3,299" data-cat="Saree"
+            data-img="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700&auto=format&fit=crop&q=80"
+            aria-label="View details for Chanderi Silk Saree">View Details</button>
+        </div>
+      </article>
+
+      <article class="product-card fade-in" data-category="Saree">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1594938298603-c8148c4b4bdd?w=500&auto=format&fit=crop&q=75" alt="Banarasi Silk Saree" loading="lazy" />
+          <span class="category-badge">Saree</span>
+          <button class="card-wishlist-btn" aria-label="Add to wishlist" data-name="Banarasi Silk Saree" data-price="₹5,499" data-img="https://images.unsplash.com/photo-1594938298603-c8148c4b4bdd?w=700&auto=format&fit=crop&q=80">♡</button>
+        </div>
+        <div class="card-body">
+          <h3 class="card-name">Banarasi Silk Saree</h3>
+          <p class="card-desc">Opulent Banarasi weave in gold and crimson — made for celebrations.</p>
+          <p class="card-price">₹5,499</p>
+          <button class="btn btn-outline view-details"
+            data-name="Banarasi Silk Saree"
+            data-desc="Rich Banarasi silk saree featuring intricate brocade weaving in gold and crimson threads with a complementary sheer pallu with scalloped zari borders. Perfect for weddings and festive occasions."
+            data-price="₹5,499" data-cat="Saree"
+            data-img="https://images.unsplash.com/photo-1594938298603-c8148c4b4bdd?w=700&auto=format&fit=crop&q=80"
+            aria-label="View details for Banarasi Silk Saree">View Details</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ========== CATEGORY NAV ========== -->
+  <div class="alpana-divider" aria-hidden="true"><svg viewBox="0 0 1200 40" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="20" x2="1200" y2="20" stroke="#F7C8D0" stroke-width="1" opacity="0.6"/></svg></div>
+  <section style="padding:2.5rem 1rem 4rem;text-align:center;">
+    <p class="section-eyebrow">Explore More</p>
+    <h2 class="section-title" style="font-size:clamp(1.5rem,3vw,2rem);margin-bottom:1.5rem;">Browse Other Collections</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;">
+      <a href="saree.html" class="btn btn-primary" style="min-width:100px;">Saree</a><a href="kurti.html" class="btn btn-outline" style="min-width:100px;">Kurti</a><a href="nighty.html" class="btn btn-outline" style="min-width:100px;">Nighty</a><a href="legins.html" class="btn btn-outline" style="min-width:100px;">Legins</a><a href="blouse.html" class="btn btn-outline" style="min-width:100px;">Blouse</a>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-alpana" aria-hidden="true">
+      <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <g opacity="0.3" fill="#F7C8D0">
+          <ellipse cx="100" cy="30" rx="8" ry="14" transform="rotate(-15 100 30)"/><ellipse cx="100" cy="30" rx="8" ry="14"/><ellipse cx="100" cy="30" rx="8" ry="14" transform="rotate(15 100 30)"/><circle cx="100" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+          <ellipse cx="400" cy="30" rx="8" ry="14" transform="rotate(-15 400 30)"/><ellipse cx="400" cy="30" rx="8" ry="14"/><ellipse cx="400" cy="30" rx="8" ry="14" transform="rotate(15 400 30)"/><circle cx="400" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+          <ellipse cx="700" cy="30" rx="8" ry="14" transform="rotate(-15 700 30)"/><ellipse cx="700" cy="30" rx="8" ry="14"/><ellipse cx="700" cy="30" rx="8" ry="14" transform="rotate(15 700 30)"/><circle cx="700" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+          <ellipse cx="1000" cy="30" rx="8" ry="14" transform="rotate(-15 1000 30)"/><ellipse cx="1000" cy="30" rx="8" ry="14"/><ellipse cx="1000" cy="30" rx="8" ry="14" transform="rotate(15 1000 30)"/><circle cx="1000" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+        </g>
+        <line x1="0" y1="55" x2="1200" y2="55" stroke="#F7C8D0" stroke-width="0.5" opacity="0.4"/>
+      </svg>
+    </div>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" alt="Ruma's Sajghor" class="footer-logo" />
+        <p class="footer-tagline">Dress Your Story.</p>
+        <p class="footer-blurb">Bengali-inspired fashion for the modern woman — where tradition meets contemporary grace.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <p class="footer-nav-title">Quick Links</p>
+        <a href="index.html#home">Home</a>
+        <a href="index.html#collections">Collections</a>
+        <a href="index.html#about">About</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+      <div class="footer-social">
+        <p class="footer-nav-title">Follow Us</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Instagram" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+            Instagram
+          </a>
+          <a href="#" aria-label="Facebook" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 Ruma's Sajghor. All Rights Reserved.</p></div>
+  </footer>
+
+  <!-- ========== PRODUCT MODAL ========== -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-box">
+      <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+      <div class="modal-inner">
+        <div class="modal-img-wrap">
+          <img src="" alt="" id="modalImg" loading="lazy" />
+          <span class="category-badge" id="modalBadge"></span>
+        </div>
+        <div class="modal-details">
+          <p class="section-eyebrow" id="modalCat"></p>
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <p class="modal-desc" id="modalDesc"></p>
+          <p class="modal-price" id="modalPrice"></p>
+          <div class="modal-actions">
+            <button class="btn btn-primary wishlist-btn" id="wishlistBtn">
+              <span class="heart-icon" aria-hidden="true">♡</span> Add to Wishlist
+            </button>
+            <button class="btn btn-outline share-btn" id="shareBtn" aria-label="Share this item">
+              <span aria-hidden="true">↗</span> Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BACK TO TOP ========== -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" hidden>↑</button>
+
+  <script src="script.js"></script>
+  <script>
+  /* ── Search Bar Logic ── */
+  (function() {
+    // Product catalogue — collected from all product cards on this page
+    function buildCatalogue() {
+      const cards = document.querySelectorAll('.view-details');
+      const items = [];
+      cards.forEach(btn => {
+        items.push({
+          name:  btn.dataset.name  || '',
+          price: btn.dataset.price || '',
+          cat:   btn.dataset.cat   || '',
+          img:   btn.dataset.img   || '',
+          desc:  btn.dataset.desc  || '',
+          btn:   btn
+        });
+      });
+      // Fallback static list for pages without product cards (e.g. wishlist)
+      if (items.length === 0) return [];
+      return items;
+    }
+
+    const searchWrap   = document.getElementById('navSearch');
+    const searchToggle = document.getElementById('searchToggle');
+    const searchBox    = document.getElementById('searchBox');
+    const searchInput  = document.getElementById('searchInput');
+    const searchClear  = document.getElementById('searchClear');
+    const searchRes    = document.getElementById('searchResults');
+
+    if (!searchWrap) return;
+
+    const catalogue = buildCatalogue();
+
+    function open() {
+      searchWrap.classList.add('open');
+      searchToggle.setAttribute('aria-expanded', 'true');
+      setTimeout(() => searchInput.focus(), 300);
+    }
+
+    function close() {
+      searchWrap.classList.remove('open');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      searchInput.value = '';
+      searchClear.setAttribute('hidden', '');
+      searchRes.setAttribute('hidden', '');
+    }
+
+    searchToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      searchWrap.classList.contains('open') ? close() : open();
+    });
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      searchClear.setAttribute('hidden', '');
+      searchRes.setAttribute('hidden', '');
+      searchInput.focus();
+    });
+
+    function highlight(text, query) {
+      if (!query) return text;
+      const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return text.replace(re, '<mark class="search-highlight">$1</mark>');
+    }
+
+    function showResults(query) {
+      const q = query.trim().toLowerCase();
+      searchRes.innerHTML = '';
+
+      if (!q) { searchRes.setAttribute('hidden', ''); return; }
+
+      const matches = catalogue.filter(item =>
+        item.name.toLowerCase().includes(q) ||
+        item.cat.toLowerCase().includes(q) ||
+        item.desc.toLowerCase().includes(q)
+      ).slice(0, 6);
+
+      if (matches.length === 0) {
+        searchRes.innerHTML = `<p class="search-no-results">No results for "<strong>${query}</strong>"</p>`;
+        searchRes.removeAttribute('hidden');
+        return;
+      }
+
+      matches.forEach(item => {
+        const el = document.createElement('button');
+        el.className = 'search-result-item';
+        el.setAttribute('role', 'option');
+        el.innerHTML = `
+          <img class="sr-img" src="${item.img}" alt="${item.name}"
+               onerror="this.style.background='var(--clr-grey-lt)';this.removeAttribute('src')" />
+          <div class="sr-info">
+            <div class="sr-name">${highlight(item.name, query)}</div>
+            <div class="sr-meta">${item.price}</div>
+            <div class="sr-cat">${item.cat}</div>
+          </div>
+        `;
+        el.addEventListener('click', () => {
+          // Trigger the product's "View Details" modal
+          item.btn.click();
+          close();
+        });
+        searchRes.appendChild(el);
+      });
+
+      searchRes.removeAttribute('hidden');
+    }
+
+    searchInput.addEventListener('input', () => {
+      const val = searchInput.value;
+      val ? searchClear.removeAttribute('hidden') : searchClear.setAttribute('hidden', '');
+      showResults(val);
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!searchWrap.contains(e.target)) close();
+    });
+  })();
+  </script>
+</body>
+</html>

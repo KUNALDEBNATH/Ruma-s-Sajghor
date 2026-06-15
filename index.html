@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ruma's Sajghor – Dress Your Story. Premium Bengali-inspired ethnic and fusion fashion for women." />
+  <title>Ruma's Sajghor | Dress Your Story</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Navbar overflow fix: allow search dropdown to escape navbar bounds ── */
+    .navbar { overflow: visible !important; }
+    .nav-inner { overflow: visible !important; }
+    .nav-actions { overflow: visible !important; }
+
+    /* ── Animated Search Bar ── */
+    .nav-search {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--clr-maroon);
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .search-toggle:hover { background: var(--clr-blush-lt); }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      max-width: 0;
+      opacity: 0;
+      transition: max-width 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease, box-shadow 0.3s ease;
+      background: var(--clr-white);
+      border: 1.5px solid transparent;
+      border-radius: 24px;
+      box-shadow: none;
+      position: relative;
+    }
+
+    .nav-search.open .search-box {
+      max-width: 240px;
+      opacity: 1;
+      border-color: var(--clr-blush);
+      box-shadow: 0 2px 16px rgba(123,30,58,0.10);
+    }
+
+    .search-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--ff-body);
+      font-size: var(--fs-sm);
+      color: var(--clr-text);
+      padding: 0.45rem 0.75rem;
+      width: 200px;
+      min-width: 0;
+    }
+    .search-input::placeholder { color: var(--clr-text-lt); opacity: 0.7; }
+
+    .search-clear {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--clr-text-lt);
+      font-size: 13px;
+      padding: 0 0.6rem 0 0;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .search-clear:hover { color: var(--clr-maroon); }
+
+    /* Results dropdown */
+    .search-results {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 300px;
+      background: var(--clr-white);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      border: 1px solid var(--clr-blush);
+      z-index: 9999;
+      overflow: hidden;
+      animation: dropIn 0.2s ease;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+    @keyframes dropIn {
+      from { opacity:0; transform:translateY(-8px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: var(--ff-body);
+      font-size: var(--fs-sm);
+      color: var(--clr-text);
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .search-result-item:hover { background: var(--clr-blush-lt); }
+    .search-result-item:not(:last-child) { border-bottom: 1px solid rgba(247,200,208,0.4); }
+
+    .sr-img {
+      width: 38px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: var(--clr-grey-lt);
+      flex-shrink: 0;
+    }
+    .sr-info { flex: 1; min-width: 0; }
+    .sr-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--clr-text); }
+    .sr-meta { font-size: var(--fs-xs); color: var(--clr-maroon); margin-top: 1px; }
+    .sr-cat  { font-size: var(--fs-xs); color: var(--clr-text-lt); }
+
+    .search-no-results {
+      padding: 1.25rem 1rem;
+      text-align: center;
+      font-size: var(--fs-sm);
+      color: var(--clr-text-lt);
+      font-family: var(--ff-body);
+    }
+
+    .search-highlight { color: var(--clr-maroon); font-weight: 600; }
+
+    @media (max-width: 600px) {
+      .nav-search.open .search-box { max-width: 140px; }
+      .search-input { width: 110px; }
+      .search-results { width: 240px; right: -10px; }
+    }
+    @media (max-width: 400px) {
+      .nav-search.open .search-box { max-width: 110px; }
+      .search-input { width: 85px; font-size: 0.78rem; }
+      .search-results { width: 210px; right: -5px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <header class="navbar" id="navbar" role="banner">
+    <div class="nav-inner">
+      <a href="#home" class="nav-logo" aria-label="Ruma's Sajghor Home">
+        <img src="logo.png" alt="Ruma's Sajghor Logo" class="logo-img" />
+        <div class="nav-brand-text">
+          <span class="nav-brand-name">Ruma's Sajghor</span>
+          <span class="nav-brand-tagline">Dress Your Story</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" id="navLinks" role="navigation" aria-label="Main navigation">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#collections" class="nav-link">Collections</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <!-- Right action group -->
+      <div class="nav-actions">
+        <div class="nav-search" id="navSearch">
+          <button class="search-toggle" id="searchToggle" aria-label="Open search" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <div class="search-box" id="searchBox" role="search">
+            <input type="search" id="searchInput" class="search-input" placeholder="Search sarees, kurtis…" aria-label="Search products" autocomplete="off" />
+            <button class="search-clear" id="searchClear" aria-label="Clear search" hidden>✕</button>
+          </div>
+          <div class="search-results" id="searchResults" role="listbox" aria-label="Search results" hidden></div>
+        </div>
+
+        <button class="nav-wishlist-icon" id="navWishlistBtn" aria-label="View wishlist" onclick="location.href='wishlist.html'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="wishlist-count" id="wishlistCount" hidden>0</span>
+        </button>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="home" aria-label="Hero banner">
+    <!-- Decorative alpana petals -->
+    <div class="hero-deco" aria-hidden="true">
+      <svg viewBox="0 0 800 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,60 C100,10 200,100 300,50 C400,0 500,110 600,55 C700,5 750,80 800,60 L800,120 L0,120 Z" fill="#F7C8D0" opacity="0.25"/>
+        <path d="M0,80 C120,30 240,120 360,65 C480,15 600,100 800,70 L800,120 L0,120 Z" fill="#F7C8D0" opacity="0.15"/>
+      </svg>
+    </div>
+
+    <div class="hero-content fade-in">
+      <p class="hero-eyebrow">Bengali-Inspired Fashion</p>
+      <h1 class="hero-title">Dress Your<br /><em>Story</em></h1>
+      <p class="hero-sub">Discover styles that celebrate confidence,<br />elegance, and individuality.</p>
+      <a href="#collections" class="btn btn-primary">Explore Collections</a>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-img-frame">
+        <img
+          src="Owner.jpeg"
+          alt="Woman in elegant saree"
+          loading="eager"
+          class="hero-img"
+        />
+        <div class="hero-badge">New Arrivals ✦ 2026</div>
+      </div>
+      <!-- Alpana motif circle -->
+      <div class="hero-circle" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ========== DIVIDER ========== -->
+  <div class="alpana-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="20" x2="460" y2="20" stroke="#F7C8D0" stroke-width="1"/>
+      <circle cx="480" cy="20" r="4" fill="#7B1E3A" opacity="0.4"/>
+      <path d="M500,20 Q520,8 540,20 Q560,32 580,20 Q600,8 620,20 Q640,32 660,20 Q680,8 700,20" stroke="#7B1E3A" stroke-width="1.5" fill="none" opacity="0.5"/>
+      <circle cx="720" cy="20" r="4" fill="#7B1E3A" opacity="0.4"/>
+      <line x1="740" y1="20" x2="1200" y2="20" stroke="#F7C8D0" stroke-width="1"/>
+      <!-- Lotus motif center -->
+      <g transform="translate(600,20)" opacity="0.6">
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0" transform="rotate(-30)"/>
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0"/>
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0" transform="rotate(30)"/>
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0" transform="rotate(60)"/>
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0" transform="rotate(-60)"/>
+        <circle cx="0" cy="0" r="3" fill="#7B1E3A"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ========== COLLECTIONS ========== -->
+  <section class="collections" id="collections" aria-label="Product collections">
+    <div class="section-header fade-in">
+      <p class="section-eyebrow">Curated For You</p>
+      <h2 class="section-title">Our Collections</h2>
+      <p class="section-sub">From timeless sarees to modern fusion — every piece tells a story.</p>
+    </div>
+
+    <!-- Category Cards Grid -->
+    <div class="products-grid" id="productsGrid" aria-label="Browse by category">
+
+      <!-- Saree -->
+      <article class="product-card fade-in">
+        <a href="saree.html" class="cat-card-link" aria-label="Browse Saree collection">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500&auto=format&fit=crop&q=75" alt="Saree Collection" loading="lazy" />
+            <span class="category-badge">Saree</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-name">Saree</h3>
+            <p class="card-desc">From gossamer Chanderi to opulent Banarasi — sarees that drape your story with grace.</p>
+            <span class="btn btn-outline" style="display:inline-block;pointer-events:none;">Browse Collection &rarr;</span>
+          </div>
+        </a>
+      </article>
+
+      <!-- Kurti -->
+      <article class="product-card fade-in">
+        <a href="kurti.html" class="cat-card-link" aria-label="Browse Kurti collection">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=500&auto=format&fit=crop&q=75" alt="Kurti Collection" loading="lazy" />
+            <span class="category-badge new-badge">New</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-name">Kurti</h3>
+            <p class="card-desc">Block prints, Anarkali flares, and fusion cuts — kurtis that move with your story.</p>
+            <span class="btn btn-outline" style="display:inline-block;pointer-events:none;">Browse Collection &rarr;</span>
+          </div>
+        </a>
+      </article>
+
+      <!-- Nighty -->
+      <article class="product-card fade-in">
+        <a href="nighty.html" class="cat-card-link" aria-label="Browse Nighty collection">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&auto=format&fit=crop&q=75" alt="Nighty Collection" loading="lazy" />
+            <span class="category-badge">Nighty</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-name">Nighty</h3>
+            <p class="card-desc">Soft florals and breathable linens — comfort that carries you through the night.</p>
+            <span class="btn btn-outline" style="display:inline-block;pointer-events:none;">Browse Collection &rarr;</span>
+          </div>
+        </a>
+      </article>
+
+      <!-- Legins -->
+      <article class="product-card fade-in">
+        <a href="legins.html" class="cat-card-link" aria-label="Browse Legins collection">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1542295669297-4d1bf571f8d4?w=500&auto=format&fit=crop&q=75" alt="Legins Collection" loading="lazy" />
+            <span class="category-badge">Legins</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-name">Legins</h3>
+            <p class="card-desc">Churidar to palazzo — the perfect companion for every kurti and saree look.</p>
+            <span class="btn btn-outline" style="display:inline-block;pointer-events:none;">Browse Collection &rarr;</span>
+          </div>
+        </a>
+      </article>
+
+      <!-- Blouse -->
+      <article class="product-card fade-in">
+        <a href="blouse.html" class="cat-card-link" aria-label="Browse Blouse collection">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500&auto=format&fit=crop&q=75" alt="Blouse Collection" loading="lazy" />
+            <span class="category-badge">Blouse</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-name">Blouse</h3>
+            <p class="card-desc">Embroidered, printed, and tailored — blouses that complete every saree story.</p>
+            <span class="btn btn-outline" style="display:inline-block;pointer-events:none;">Browse Collection &rarr;</span>
+          </div>
+        </a>
+      </article>
+
+    </div>
+
+    <style>
+      /* Category card links — full-card clickable */
+      .cat-card-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        height: 100%;
+      }
+      .cat-card-link:hover .card-name { color: var(--clr-maroon); }
+      .cat-card-link:hover .btn-outline {
+        background: var(--clr-maroon);
+        color: var(--clr-white);
+        border-color: var(--clr-maroon);
+      }
+      #productsGrid { justify-content: center; }
+    </style>
+  </section>
+
+  <!-- ========== ALPANA DIVIDER ========== -->
+  <div class="alpana-divider" aria-hidden="true">
+    <svg viewBox="0 0 1200 40" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="20" x2="460" y2="20" stroke="#F7C8D0" stroke-width="1"/>
+      <circle cx="480" cy="20" r="4" fill="#7B1E3A" opacity="0.4"/>
+      <path d="M500,20 Q520,8 540,20 Q560,32 580,20 Q600,8 620,20 Q640,32 660,20 Q680,8 700,20" stroke="#7B1E3A" stroke-width="1.5" fill="none" opacity="0.5"/>
+      <circle cx="720" cy="20" r="4" fill="#7B1E3A" opacity="0.4"/>
+      <line x1="740" y1="20" x2="1200" y2="20" stroke="#F7C8D0" stroke-width="1"/>
+      <g transform="translate(600,20)" opacity="0.6">
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0" transform="rotate(-30)"/>
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0"/>
+        <ellipse cx="0" cy="-6" rx="4" ry="7" fill="#F7C8D0" transform="rotate(30)"/>
+        <circle cx="0" cy="0" r="3" fill="#7B1E3A"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ========== ABOUT ========== -->
+  <section class="about" id="about" aria-label="About Ruma's Sajghor">
+    <div class="about-inner">
+      <div class="about-visual fade-in" aria-hidden="true">
+        <div class="about-img-wrap">
+          <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&auto=format&fit=crop&q=80" alt="Bengali fashion artistry" loading="lazy" />
+        </div>
+        <div class="about-deco-dot"></div>
+      </div>
+      <div class="about-text fade-in">
+        <p class="section-eyebrow">Our Story</p>
+        <h2 class="section-title">Born in Bengal,<br />Worn by the World</h2>
+        <p class="about-para">
+          Ruma's Sajghor is a Bengali-inspired fashion destination where every outfit reflects individuality, tradition, and modern elegance. We believe fashion is more than clothing — it's a way of expressing your unique story.
+        </p>
+        <p class="about-para">
+          Our collections are lovingly curated from artisan weavers, block printers, and designers who carry centuries of craft in their hands. We bring their work to you — with a modern sensibility that honours the past while embracing today.
+        </p>
+        <div class="about-values">
+          <div class="value-item">
+            <span class="value-icon">✦</span>
+            <div>
+              <strong>Artisan-Made</strong>
+              <p>Each piece supports traditional craft communities.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-icon">✦</span>
+            <div>
+              <strong>Sustainably Sourced</strong>
+              <p>Natural fibres, ethical production, conscious fashion.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-icon">✦</span>
+            <div>
+              <strong>Rooted in Culture</strong>
+              <p>Bengali heritage woven into every thread.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section class="testimonials" aria-label="Customer testimonials">
+    <div class="section-header fade-in">
+      <p class="section-eyebrow">Loved By Many</p>
+      <h2 class="section-title">What Our Customers Say</h2>
+    </div>
+    <div class="testimonials-grid">
+
+      <article class="testimonial-card fade-in">
+        <div class="testi-avatar" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=75" alt="Priya S." loading="lazy" />
+        </div>
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="testi-text">"I wore the Chanderi saree to my sister's wedding and received compliments all evening. The quality is extraordinary — soft, beautiful, and completely worth it."</p>
+        <p class="testi-name">Priya Sarkar</p>
+        <p class="testi-loc">Kolkata, West Bengal</p>
+      </article>
+
+      <article class="testimonial-card fade-in">
+        <div class="testi-avatar" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&auto=format&fit=crop&q=75" alt="Ananya B." loading="lazy" />
+        </div>
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="testi-text">"Ruma's Sajghor has become my go-to for every occasion. The fusion wear collection is unmatched — modern yet deeply rooted in our culture. I love everything about this brand."</p>
+        <p class="testi-name">Ananya Bose</p>
+        <p class="testi-loc">Dhaka, Bangladesh</p>
+      </article>
+
+      <article class="testimonial-card fade-in">
+        <div class="testi-avatar" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=80&auto=format&fit=crop&q=75" alt="Meenakshi R." loading="lazy" />
+        </div>
+        <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+        <p class="testi-text">"The Anarkali kurti I ordered was even more beautiful in person. The fabric is so comfortable and the embroidery is incredibly detailed. Truly a boutique experience."</p>
+        <p class="testi-name">Meenakshi Roy</p>
+        <p class="testi-loc">Mumbai, Maharashtra</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="contact" id="contact" aria-label="Contact us">
+    <div class="contact-inner">
+      <div class="contact-info fade-in">
+        <p class="section-eyebrow">Get In Touch</p>
+        <h2 class="section-title">We'd Love to<br />Hear From You</h2>
+        <p class="contact-para">Whether it's a custom order, a styling question, or just to say hello — our door is always open.</p>
+        <ul class="contact-details" aria-label="Contact information">
+          <li>
+            <span class="contact-icon" aria-hidden="true">✉</span>
+            <a href="mailto:hello@rumassajghor.com">hello@rumassajghor.com</a>
+          </li>
+          <li>
+            <span class="contact-icon" aria-hidden="true">☏</span>
+            <a href="tel:+919800000000">+91 98000 00000</a>
+          </li>
+          <li>
+            <span class="contact-icon" aria-hidden="true">⌖</span>
+            <span>Kolkata, West Bengal, India</span>
+          </li>
+        </ul>
+      </div>
+
+      <form class="contact-form fade-in" id="contactForm" aria-label="Contact form" novalidate>
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="Priya Sharma" autocomplete="name" />
+          <span class="field-error" id="nameError" role="alert"></span>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" />
+          <span class="field-error" id="emailError" role="alert"></span>
+        </div>
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Tell us about your dream outfit…"></textarea>
+          <span class="field-error" id="messageError" role="alert"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+        <div class="form-success" id="formSuccess" role="status" aria-live="polite" hidden>
+          ✦ Thank you! We'll be in touch soon.
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer" role="contentinfo">
+    <!-- Alpana decorative divider at top of footer -->
+    <div class="footer-alpana" aria-hidden="true">
+      <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <!-- Lotus repeating pattern -->
+        <g opacity="0.3" fill="#F7C8D0">
+          <ellipse cx="100" cy="30" rx="8" ry="14" transform="rotate(-15 100 30)"/>
+          <ellipse cx="100" cy="30" rx="8" ry="14"/>
+          <ellipse cx="100" cy="30" rx="8" ry="14" transform="rotate(15 100 30)"/>
+          <circle cx="100" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+
+          <ellipse cx="300" cy="30" rx="8" ry="14" transform="rotate(-15 300 30)"/>
+          <ellipse cx="300" cy="30" rx="8" ry="14"/>
+          <ellipse cx="300" cy="30" rx="8" ry="14" transform="rotate(15 300 30)"/>
+          <circle cx="300" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+
+          <ellipse cx="500" cy="30" rx="8" ry="14" transform="rotate(-15 500 30)"/>
+          <ellipse cx="500" cy="30" rx="8" ry="14"/>
+          <ellipse cx="500" cy="30" rx="8" ry="14" transform="rotate(15 500 30)"/>
+          <circle cx="500" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+
+          <ellipse cx="700" cy="30" rx="8" ry="14" transform="rotate(-15 700 30)"/>
+          <ellipse cx="700" cy="30" rx="8" ry="14"/>
+          <ellipse cx="700" cy="30" rx="8" ry="14" transform="rotate(15 700 30)"/>
+          <circle cx="700" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+
+          <ellipse cx="900" cy="30" rx="8" ry="14" transform="rotate(-15 900 30)"/>
+          <ellipse cx="900" cy="30" rx="8" ry="14"/>
+          <ellipse cx="900" cy="30" rx="8" ry="14" transform="rotate(15 900 30)"/>
+          <circle cx="900" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+
+          <ellipse cx="1100" cy="30" rx="8" ry="14" transform="rotate(-15 1100 30)"/>
+          <ellipse cx="1100" cy="30" rx="8" ry="14"/>
+          <ellipse cx="1100" cy="30" rx="8" ry="14" transform="rotate(15 1100 30)"/>
+          <circle cx="1100" cy="30" r="4" fill="#7B1E3A" opacity="0.5"/>
+        </g>
+        <line x1="0" y1="55" x2="1200" y2="55" stroke="#F7C8D0" stroke-width="0.5" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="logo.png" alt="Ruma's Sajghor" class="footer-logo" />
+        <p class="footer-tagline">Dress Your Story.</p>
+        <p class="footer-blurb">Bengali-inspired fashion for the modern woman — where tradition meets contemporary grace.</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <p class="footer-nav-title">Quick Links</p>
+        <a href="#home">Home</a>
+        <a href="#collections">Collections</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="footer-social">
+        <p class="footer-nav-title">Follow Us</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Instagram" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/></svg>
+            Instagram
+          </a>
+          <a href="#" aria-label="Facebook" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            Facebook
+          </a>
+          <a href="#" aria-label="Pinterest" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.24 2.65 7.86 6.39 9.29-.09-.78-.17-1.98.04-2.83.18-.76 1.22-5.17 1.22-5.17s-.31-.62-.31-1.54c0-1.45.84-2.53 1.88-2.53.89 0 1.32.67 1.32 1.47 0 .9-.57 2.24-.87 3.48-.25 1.04.52 1.88 1.53 1.88 1.84 0 3.08-2.36 3.08-5.14 0-2.12-1.43-3.7-4.01-3.7-2.93 0-4.76 2.19-4.76 4.64 0 .84.24 1.43.62 1.89.17.21.19.29.13.53-.05.17-.15.58-.19.74-.06.24-.25.33-.46.24-1.32-.54-1.94-2-1.94-3.64 0-2.7 2.28-5.98 6.82-5.98 3.66 0 6.08 2.66 6.08 5.52 0 3.79-2.1 6.63-5.19 6.63-1.04 0-2.02-.56-2.36-1.19l-.66 2.54c-.24.9-.88 2.03-1.31 2.72.98.3 2.03.47 3.1.47 5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
+            Pinterest
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Ruma's Sajghor. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+
+    <!-- ========== BACK TO TOP ========== -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" hidden>↑</button>
+
+  <script src="script.js"></script>
+  <script>
+  /* ── Smart Search – index.html (static catalogue, Amazon-style) ── */
+  (function () {
+
+    /* ==========================================================
+       STATIC CATALOGUE
+       Every product across all category pages lives here.
+       When you add products to a category page, add them here too.
+       page = the HTML file to navigate to when the result is clicked.
+    ========================================================== */
+    const CATALOGUE = [
+      /* ── SAREE ── */
+      { name: 'Chanderi Silk Saree',  cat: 'Saree',  price: '₹3,299',
+        tags: 'chanderi silk zari border gossamer handwoven festive wedding drape sari',
+        img: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120&auto=format&fit=crop&q=60',
+        page: 'saree.html' },
+      { name: 'Banarasi Silk Saree',  cat: 'Saree',  price: '₹5,499',
+        tags: 'banarasi silk brocade gold crimson wedding festive zari pallu sari drape',
+        img: 'https://images.unsplash.com/photo-1594938298603-c8148c4b4bdd?w=120&auto=format&fit=crop&q=60',
+        page: 'saree.html' },
+
+      /* ── KURTI ── */
+      { name: 'Anarkali Kurti',  cat: 'Kurti',  price: '₹700',
+        tags: 'anarkali flared fit flare black block print cotton ethnic tassel dori',
+        img: 'Kurti_pic/Anarkali_Kurti.jpeg',
+        page: 'kurti.html' },
+      { name: 'Ajrakh Modal Kurti',  cat: 'Kurti',  price: '₹700',
+        tags: 'ajrakh block print rajasthani cotton modal handcrafted ethnic kurti',
+        img: 'Kurti_pic/Ajrakh1.jpeg',
+        page: 'kurti.html' },
+      { name: 'Elegant Floral V-Neck Kurti',  cat: 'Kurti',  price: '₹250',
+        tags: 'floral botanical v-neck embroidery sequin off-white teal rust elegant kurti',
+        img: 'Kurti_pic/Elegant Floral V-Neck Kurti.jpeg',
+        page: 'kurti.html' },
+      { name: 'Angrakha Style Patchwork Kurti',  cat: 'Kurti',  price: '₹250',
+        tags: 'angrakha patchwork lime green peacock mirror work asymmetric crossover kurti',
+        img: 'Kurti_pic/Angrakha.jpeg',
+        page: 'kurti.html' },
+      { name: 'Sleeveless Panelled Paisley Kurti',  cat: 'Kurti',  price: '₹700',
+        tags: 'paisley keri block print sleeveless panel black rose pink straight kurti',
+        img: 'Kurti_pic/Panelled_Paisley_Kurti.jpeg',
+        page: 'kurti.html' },
+      { name: 'Dual-Pattern Lace Kurti',  cat: 'Kurti',  price: '₹700',
+        tags: 'lace crochet diagonal panel maroon geometric block print v-neck 3/4 sleeves kurti',
+        img: 'Kurti_pic/Dual_Pattern_Lace_Kurti.jpeg',
+        page: 'kurti.html' },
+      { name: 'Lace-Trimmed Block Print Kurti',  cat: 'Kurti',  price: '₹700',
+        tags: 'lace block print diagonal rust maroon black ochre asymmetric kurti',
+        img: 'Kurti_pic/Lace-Trimmed Block Print Kurti.jpeg',
+        page: 'kurti.html' },
+
+      /* ── NIGHTY ── */
+      { name: 'Floral Cotton Nighty',  cat: 'Nighty',  price: '₹799',
+        tags: 'floral cotton nighty nightwear sleepwear blush mauve soft comfortable full length',
+        img: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=120&auto=format&fit=crop&q=60',
+        page: 'nighty.html' },
+      { name: 'Linen Maxi Nighty',  cat: 'Nighty',  price: '₹1,099',
+        tags: 'linen maxi nighty nightwear sleepwear beige sage rose pintuck elegant comfortable',
+        img: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=120&auto=format&fit=crop&q=60',
+        page: 'nighty.html' },
+
+      /* ── LEGINS ── */
+      { name: 'Churidar Legins',  cat: 'Legins',  price: '₹499',
+        tags: 'churidar legins stretch cotton slim tapered ankle black navy maroon bottom pant',
+        img: 'https://images.unsplash.com/photo-1542295669297-4d1bf571f8d4?w=120&auto=format&fit=crop&q=60',
+        page: 'legins.html' },
+      { name: 'Palazzo Legins',  cat: 'Legins',  price: '₹699',
+        tags: 'palazzo wide leg flowing fabric elasticated waist ivory blush burgundy pant bottom',
+        img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=120&auto=format&fit=crop&q=60',
+        page: 'legins.html' },
+
+      /* ── BLOUSE ── */
+      { name: 'Embroidered Saree Blouse',  cat: 'Blouse',  price: '₹1,199',
+        tags: 'embroidered blouse saree choli thread sequin handmade custom stitching hook',
+        img: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=120&auto=format&fit=crop&q=60',
+        page: 'blouse.html' },
+      { name: 'Silk Printed Blouse',  cat: 'Blouse',  price: '₹949',
+        tags: 'silk printed blouse saree choli jewel tones motif 3/4 sleeves rounded neckline',
+        img: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=120&auto=format&fit=crop&q=60',
+        page: 'blouse.html' },
+    ];
+
+    /* ==========================================================
+       SYNONYM MAP  – maps query words → expanded terms
+    ========================================================== */
+    const SYNONYMS = {
+      saree:       ['saree','sari','drape','silk saree','banarasi','chanderi'],
+      sari:        ['saree','sari','drape'],
+      kurti:       ['kurti','kurta','tunic','top','anarkali','angrakha','ajrakh'],
+      kurta:       ['kurti','kurta'],
+      nighty:      ['nighty','nightwear','sleepwear','night dress','maxi nighty','floral nighty'],
+      night:       ['nighty','nightwear','sleepwear'],
+      sleep:       ['nighty','nightwear','sleepwear'],
+      legins:      ['legins','leggings','churidar','palazzo','pant','bottom'],
+      leggings:    ['legins','leggings','churidar','palazzo'],
+      blouse:      ['blouse','choli'],
+      silk:        ['silk','resham'],
+      cotton:      ['cotton','suti','khadi'],
+      linen:       ['linen','maxi'],
+      embroidered: ['embroidered','embroidery','zari','sequin','thread work'],
+      embroidery:  ['embroidered','embroidery','zari','sequin'],
+      print:       ['print','block print','ajrakh','batik','kalamkari'],
+      block:       ['block print','ajrakh','kalamkari','batik','print'],
+      floral:      ['floral','flower','botanical'],
+      flower:      ['floral','flower','botanical'],
+      wedding:     ['wedding','bridal','festive','celebration','banarasi','chanderi'],
+      bridal:      ['wedding','bridal','festive'],
+      festive:     ['wedding','festive','celebration','banarasi'],
+      casual:      ['casual','everyday','comfort','cotton'],
+      comfort:     ['comfort','casual','cotton','soft'],
+      anarkali:    ['anarkali','flared','fit flare'],
+      banarasi:    ['banarasi','brocade','gold silk'],
+      chanderi:    ['chanderi','gossamer','zari border'],
+      ajrakh:      ['ajrakh','block print','rajasthani','handcrafted'],
+      palazzo:     ['palazzo','wide leg','flowy','legins'],
+      churidar:    ['churidar','slim','tapered','legins'],
+      lace:        ['lace','crochet','lace-trimmed','trim'],
+      paisley:     ['paisley','keri','booti'],
+      green:       ['green','lime'],
+      black:       ['black','dark','jet'],
+      red:         ['red','crimson','maroon','rose'],
+      pink:        ['pink','rose','blush','mauve'],
+      gold:        ['gold','zari','brocade','banarasi'],
+      white:       ['white','off-white','ivory','cream'],
+      cheap:       ['₹250','₹499','₹700'],
+      expensive:   ['₹3,299','₹5,499','₹1,199'],
+      new:         ['new','anarkali','ajrakh','floral','angrakha','paisley','lace'],
+    };
+
+    /* ==========================================================
+       SCORING ENGINE  – fuzzy + synonym + prefix
+    ========================================================== */
+    function tokenize(str) {
+      return str.toLowerCase().replace(/[^\w\s₹,]/g,' ').split(/\s+/).filter(Boolean);
+    }
+
+    function expand(word) {
+      const w = word.toLowerCase();
+      const set = new Set([w]);
+      // direct synonym lookup
+      if (SYNONYMS[w]) SYNONYMS[w].forEach(s => set.add(s));
+      // partial key match (e.g. "embroid" → "embroidered")
+      for (const [key, vals] of Object.entries(SYNONYMS)) {
+        if (key.startsWith(w) || w.startsWith(key)) {
+          vals.forEach(s => set.add(s));
+          set.add(key);
+        }
+      }
+      return [...set];
+    }
+
+    /* Levenshtein distance for fuzzy matching */
+    function levenshtein(a, b) {
+      if (Math.abs(a.length - b.length) > 3) return 99;
+      const m = a.length, n = b.length;
+      const dp = Array.from({length:m+1}, (_,i) => [i, ...Array(n).fill(0)]);
+      for (let j = 0; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++)
+        for (let j = 1; j <= n; j++)
+          dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1]
+            : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+      return dp[m][n];
+    }
+
+    function score(item, rawQuery) {
+      const q = rawQuery.trim().toLowerCase();
+      if (!q) return 0;
+
+      const qWords = tokenize(q);
+      const expanded = [...new Set(qWords.flatMap(expand))];
+
+      const fields = {
+        name: item.name.toLowerCase(),
+        cat:  item.cat.toLowerCase(),
+        tags: item.tags.toLowerCase(),
+      };
+      const haystack = Object.values(fields).join(' ');
+
+      let s = 0;
+
+      // 1. Exact full phrase in name (highest) or haystack
+      if (fields.name.includes(q))     s += 80;
+      else if (haystack.includes(q))   s += 50;
+
+      // 2. Every query word present
+      if (qWords.every(w => haystack.includes(w))) s += 30;
+
+      // 3. Prefix of name
+      if (fields.name.startsWith(q))   s += 25;
+      if (fields.cat.startsWith(q))    s += 20;
+
+      // 4. Expanded / synonym hits
+      expanded.forEach(term => {
+        if (fields.name.includes(term)) s += 15;
+        else if (fields.cat.includes(term)) s += 12;
+        else if (fields.tags.includes(term)) s += 6;
+      });
+
+      // 5. Per query-word scoring
+      qWords.forEach(w => {
+        if (fields.name.includes(w))   s += 10;
+        if (fields.cat.includes(w))    s += 8;
+        if (fields.tags.includes(w))   s += 4;
+
+        // 6. Fuzzy fallback — reward close matches in name tokens
+        tokenize(fields.name).forEach(nt => {
+          const dist = levenshtein(w, nt);
+          if (dist === 1)      s += 6;
+          else if (dist === 2) s += 2;
+        });
+      });
+
+      return s;
+    }
+
+    /* ==========================================================
+       SUGGESTION COMPLETIONS  – shown before user finishes typing
+    ========================================================== */
+    const ALL_TERMS = [
+      'Saree','Kurti','Nighty','Legins','Blouse',
+      'Banarasi Silk Saree','Chanderi Silk Saree',
+      'Anarkali Kurti','Ajrakh Kurti','Floral Kurti','Lace Kurti','Paisley Kurti',
+      'Floral Nighty','Linen Nighty','Churidar Legins','Palazzo Legins',
+      'Embroidered Blouse','Silk Blouse',
+      'Block Print','Embroidered','Wedding','Festive','Cotton','Silk','Linen',
+    ];
+
+    function getSuggestions(q) {
+      const lq = q.toLowerCase();
+      return ALL_TERMS
+        .filter(t => t.toLowerCase().startsWith(lq) && t.toLowerCase() !== lq)
+        .slice(0, 3);
+    }
+
+    /* ==========================================================
+       DOM & UI
+    ========================================================== */
+    const searchWrap   = document.getElementById('navSearch');
+    const searchToggle = document.getElementById('searchToggle');
+    const searchInput  = document.getElementById('searchInput');
+    const searchClear  = document.getElementById('searchClear');
+    const searchRes    = document.getElementById('searchResults');
+
+    if (!searchWrap) return;
+
+    let focusedIndex = -1;
+
+    function openSearch() {
+      searchWrap.classList.add('open');
+      searchToggle.setAttribute('aria-expanded', 'true');
+      setTimeout(() => searchInput.focus(), 300);
+    }
+
+    function closeSearch() {
+      searchWrap.classList.remove('open');
+      searchToggle.setAttribute('aria-expanded', 'false');
+      searchInput.value = '';
+      searchClear.setAttribute('hidden', '');
+      searchRes.setAttribute('hidden', '');
+      focusedIndex = -1;
+    }
+
+    searchToggle.addEventListener('click', e => {
+      e.stopPropagation();
+      searchWrap.classList.contains('open') ? closeSearch() : openSearch();
+    });
+
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      searchClear.setAttribute('hidden', '');
+      searchRes.setAttribute('hidden', '');
+      focusedIndex = -1;
+      searchInput.focus();
+    });
+
+    function esc(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function highlight(text, query) {
+      const words = query.trim().split(/\s+/).filter(Boolean);
+      if (!words.length) return text;
+      const pat = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+      return text.replace(new RegExp(`(${pat})`, 'gi'), '<mark class="search-highlight">$1</mark>');
+    }
+
+    /* Navigate to a category page */
+    function goTo(page) {
+      window.location.href = page;
+    }
+
+    /* Render dropdown */
+    function showResults(query) {
+      searchRes.innerHTML = '';
+      focusedIndex = -1;
+      const q = query.trim();
+
+      if (!q) { searchRes.setAttribute('hidden', ''); return; }
+
+      // Score all items
+      const scored = CATALOGUE
+        .map(item => ({ item, s: score(item, q) }))
+        .filter(x => x.s > 0)
+        .sort((a, b) => b.s - a.s)
+        .slice(0, 8)
+        .map(x => x.item);
+
+      // Auto-complete suggestions (shown as pill chips above results)
+      const suggestions = getSuggestions(q);
+
+      if (scored.length === 0 && suggestions.length === 0) {
+        // Fuzzy fallback: show closest matches regardless of score threshold
+        const fallback = CATALOGUE
+          .map(item => ({ item, s: score(item, q) + 1 }))   // force > 0
+          .sort((a, b) => b.s - a.s)
+          .slice(0, 4)
+          .map(x => x.item);
+
+        searchRes.innerHTML = `
+          <div class="sr-did-you-mean">
+            <span>Did you mean:</span>
+            ${fallback.map(i =>
+              `<button class="sr-pill" data-page="${esc(i.page)}">${esc(i.name)}</button>`
+            ).join('')}
+          </div>`;
+        searchRes.querySelectorAll('.sr-pill').forEach(btn => {
+          btn.addEventListener('mousedown', e => e.preventDefault());
+          btn.addEventListener('click', () => goTo(btn.dataset.page));
+        });
+        searchRes.removeAttribute('hidden');
+        return;
+      }
+
+      // Suggestion chips
+      if (suggestions.length) {
+        const chipsEl = document.createElement('div');
+        chipsEl.className = 'sr-chips';
+        chipsEl.innerHTML = suggestions.map(s =>
+          `<button class="sr-chip" data-q="${esc(s)}">${esc(s)}</button>`
+        ).join('');
+        chipsEl.querySelectorAll('.sr-chip').forEach(chip => {
+          chip.addEventListener('mousedown', e => e.preventDefault());
+          chip.addEventListener('click', () => {
+            searchInput.value = chip.dataset.q;
+            showResults(chip.dataset.q);
+            searchClear.removeAttribute('hidden');
+          });
+        });
+        searchRes.appendChild(chipsEl);
+      }
+
+      // Product rows
+      scored.forEach((item, i) => {
+        const el = document.createElement('button');
+        el.className = 'search-result-item';
+        el.setAttribute('role', 'option');
+        el.setAttribute('tabindex', '-1');
+        el.dataset.idx = i;
+        el.innerHTML = `
+          <img class="sr-img" src="${esc(item.img)}" alt="${esc(item.name)}"
+               onerror="this.style.background='var(--clr-grey-lt)';this.removeAttribute('src')" />
+          <div class="sr-info">
+            <div class="sr-name">${highlight(esc(item.name), q)}</div>
+            <div class="sr-meta">${esc(item.price)}</div>
+            <div class="sr-cat">${esc(item.cat)}</div>
+          </div>
+          <span class="sr-arrow">→</span>
+        `;
+        el.addEventListener('mousedown', e => e.preventDefault());
+        el.addEventListener('click', () => { goTo(item.page); closeSearch(); });
+        searchRes.appendChild(el);
+      });
+
+      // "See all in category" footer when all results are same cat
+      const cats = [...new Set(scored.map(i => i.cat))];
+      if (cats.length === 1) {
+        const footer = document.createElement('a');
+        footer.className = 'sr-see-all';
+        footer.href = scored[0].page;
+        footer.innerHTML = `See all ${esc(cats[0])} →`;
+        footer.addEventListener('mousedown', e => e.preventDefault());
+        searchRes.appendChild(footer);
+      }
+
+      searchRes.removeAttribute('hidden');
+    }
+
+    /* Keyboard navigation */
+    searchInput.addEventListener('keydown', e => {
+      const items = searchRes.querySelectorAll('.search-result-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        focusedIndex = Math.min(focusedIndex + 1, items.length - 1);
+        items.forEach((el, i) => el.classList.toggle('focused', i === focusedIndex));
+        if (items[focusedIndex]) items[focusedIndex].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        focusedIndex = Math.max(focusedIndex - 1, 0);
+        items.forEach((el, i) => el.classList.toggle('focused', i === focusedIndex));
+        if (items[focusedIndex]) items[focusedIndex].scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const target = focusedIndex >= 0 ? items[focusedIndex] : items[0];
+        if (target) target.click();
+      } else if (e.key === 'Escape') {
+        closeSearch();
+      }
+    });
+
+    /* Debounced input */
+    let debounceTimer;
+    searchInput.addEventListener('input', () => {
+      const val = searchInput.value;
+      val ? searchClear.removeAttribute('hidden') : searchClear.setAttribute('hidden', '');
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => showResults(val), 120);
+    });
+
+    document.addEventListener('click', e => {
+      if (!searchWrap.contains(e.target)) closeSearch();
+    });
+
+  })();
+  </script>
+  <style>
+    /* Keyboard-focused search result */
+    .search-result-item.focused {
+      background: var(--clr-blush-lt);
+      outline: 2px solid var(--clr-maroon);
+      outline-offset: -2px;
+    }
+    /* Suggestion chips */
+    .sr-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      padding: 0.6rem 1rem 0.4rem;
+      border-bottom: 1px solid rgba(247,200,208,0.5);
+    }
+    .sr-chip {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      border: 1px solid var(--clr-blush);
+      background: var(--clr-blush-lt);
+      color: var(--clr-maroon);
+      cursor: pointer;
+      font-family: var(--ff-body);
+      transition: background 0.15s;
+    }
+    .sr-chip:hover { background: var(--clr-blush); }
+    /* Did-you-mean row */
+    .sr-did-you-mean {
+      padding: 0.9rem 1rem;
+      font-size: var(--fs-sm);
+      color: var(--clr-text-lt);
+      font-family: var(--ff-body);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .sr-pill {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid var(--clr-maroon);
+      background: none;
+      color: var(--clr-maroon);
+      cursor: pointer;
+      font-family: var(--ff-body);
+      transition: background 0.15s, color 0.15s;
+    }
+    .sr-pill:hover { background: var(--clr-maroon); color: #fff; }
+    /* Arrow on result rows */
+    .sr-arrow {
+      color: var(--clr-text-lt);
+      font-size: 0.85rem;
+      margin-left: auto;
+      padding-left: 0.5rem;
+      flex-shrink: 0;
+    }
+    /* See-all footer link */
+    .sr-see-all {
+      display: block;
+      text-align: center;
+      padding: 0.6rem 1rem;
+      font-size: var(--fs-xs);
+      color: var(--clr-maroon);
+      text-decoration: none;
+      border-top: 1px solid rgba(247,200,208,0.5);
+      font-family: var(--ff-body);
+      letter-spacing: 0.05em;
+      transition: background 0.15s;
+    }
+    .sr-see-all:hover { background: var(--clr-blush-lt); }
+  </style>
+  <style>
+    /* Keyboard-focused search result */
+    .search-result-item.focused {
+      background: var(--clr-blush-lt);
+      outline: 2px solid var(--clr-maroon);
+      outline-offset: -2px;
+    }
+  </style>
+</body>
+</html>
