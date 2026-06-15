@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Product detail – Ruma's Sajghor" />
+  <title>Product | Ruma's Sajghor</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Product Detail Page Styles ── */
+    .pd-page {
+      min-height: 100vh;
+      padding-top: var(--nav-height);
+      background: var(--clr-white);
+    }
+
+    /* Back link bar */
+    .pd-breadcrumb {
+      padding: 1rem 1.5rem 0;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .pd-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: var(--fs-xs);
+      color: var(--clr-maroon);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.2s;
+    }
+    .pd-back:hover { opacity: 1; }
+
+    /* Main layout */
+    .pd-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* Image side */
+    .pd-img-wrap {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--clr-blush-lt);
+      aspect-ratio: 3/4;
+      width: 100%;
+    }
+    .pd-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .pd-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: var(--clr-maroon);
+      color: var(--clr-white);
+      font-family: var(--ff-body);
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: var(--radius-xl);
+    }
+
+    /* Image loading skeleton */
+    .pd-img-skeleton {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--clr-blush-lt) 25%, var(--clr-blush) 50%, var(--clr-blush-lt) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Details side */
+    .pd-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding-top: 0.5rem;
+    }
+    .pd-eyebrow {
+      font-family: var(--ff-body);
+      font-size: var(--fs-xs);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--clr-accent);
+    }
+    .pd-name {
+      font-family: var(--ff-display);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 500;
+      color: var(--clr-maroon);
+      line-height: 1.2;
+    }
+    .pd-desc {
+      font-size: var(--fs-sm);
+      color: var(--clr-text-lt);
+      line-height: 1.8;
+    }
+    .pd-price {
+      font-family: var(--ff-display);
+      font-size: clamp(1.6rem, 4vw, 2rem);
+      font-weight: 500;
+      color: var(--clr-maroon);
+    }
+    .pd-divider {
+      border: none;
+      border-top: 1px solid var(--clr-blush);
+      margin: 0.25rem 0;
+    }
+
+    /* Action buttons */
+    .pd-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .pd-actions .btn {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .btn.wishlisted {
+      background: var(--clr-maroon-dk);
+    }
+
+    /* WhatsApp enquiry */
+    .pd-whatsapp {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #25D366;
+      color: #fff;
+      border-radius: var(--radius-xl);
+      padding: 0.85rem 1.5rem;
+      font-family: var(--ff-body);
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      justify-content: center;
+    }
+    .pd-whatsapp:hover { background: #1ebe5a; transform: translateY(-2px); }
+
+    /* Share success toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--clr-maroon);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-xl);
+      font-size: var(--fs-sm);
+      font-family: var(--ff-body);
+      z-index: 9999;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Error / fallback state */
+    .pd-not-found {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .pd-not-found h2 {
+      font-family: var(--ff-display);
+      color: var(--clr-maroon);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Mobile: stack vertically ── */
+    @media (max-width: 640px) {
+      .pd-inner {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1rem 1rem 4rem;
+      }
+      .pd-img-wrap {
+        aspect-ratio: 4/5;
+        max-height: 70vw;
+      }
+      .pd-name { font-size: clamp(1.4rem, 6vw, 2rem); }
+    }
+
+    /* Navbar overflow fix */
+    .navbar { overflow: visible !important; }
+    .nav-inner { overflow: visible !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <header class="navbar" id="navbar" role="banner">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="Ruma's Sajghor Home">
+        <img src="logo.png" alt="Ruma's Sajghor Logo" class="logo-img" />
+        <div class="nav-brand-text">
+          <span class="nav-brand-name">Ruma's Sajghor</span>
+          <span class="nav-brand-tagline">Dress Your Story</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" id="navLinks" role="navigation" aria-label="Main navigation">
+        <a href="index.html#home"        class="nav-link">Home</a>
+        <a href="index.html#collections" class="nav-link">Collections</a>
+        <a href="index.html#about"       class="nav-link">About</a>
+        <a href="index.html#contact"     class="nav-link">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="nav-wishlist-icon" id="navWishlistBtn" aria-label="View wishlist" onclick="location.href='wishlist.html'">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="wishlist-count" id="wishlistCount" hidden>0</span>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== PRODUCT DETAIL ========== -->
+  <main class="pd-page" id="pdPage">
+    <div class="pd-breadcrumb">
+      <a href="javascript:history.back()" class="pd-back" id="pdBackLink">← Back</a>
+    </div>
+
+    <div class="pd-inner" id="pdInner">
+      <!-- Filled by JS -->
+      <div class="pd-not-found" id="pdNotFound" style="display:none; grid-column:1/-1;">
+        <h2>Product not found</h2>
+        <p style="color:var(--clr-text-lt);margin-bottom:1.5rem;">The product you're looking for doesn't exist or the link may be broken.</p>
+        <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Back to top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top" hidden>↑</button>
+
+  <script src="script.js"></script>
+  <script>
+  (function () {
+    /* ── Read product data from URL params ── */
+    const params  = new URL(location.href).searchParams;
+    const name    = params.get('name')  || '';
+    const desc    = params.get('desc')  || '';
+    const price   = params.get('price') || '';
+    const img     = params.get('img')   || '';
+    const cat     = params.get('cat')   || '';
+    const from    = params.get('from')  || '';   // source page (e.g. kurti.html)
+
+    const pdInner    = document.getElementById('pdInner');
+    const notFound   = document.getElementById('pdNotFound');
+    const backLink   = document.getElementById('pdBackLink');
+
+    /* Update back link to source page */
+    if (from) backLink.href = from;
+
+    /* Update page title */
+    if (name) document.title = `${name} | Ruma's Sajghor`;
+
+    /* If no product data → show not-found */
+    if (!name && !img) {
+      notFound.style.display = 'block';
+      return;
+    }
+
+    /* ── Wishlist helpers ── */
+    const STORAGE_KEY = 'sajghor_wishlist';
+    function getWishlist()      { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+    function saveWishlist(list) { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+    function isWishlisted()     { return getWishlist().some(i => i.name === name); }
+
+    /* Update nav wishlist count */
+    (function updateCount() {
+      const el = document.getElementById('wishlistCount');
+      if (!el) return;
+      const n = getWishlist().length;
+      if (n > 0) { el.textContent = n; el.removeAttribute('hidden'); }
+      else         el.setAttribute('hidden', '');
+    })();
+
+    /* ── WhatsApp link ── */
+    const waText = encodeURIComponent(`Hi! I'm interested in "${name}" (${price}) from Ruma's Sajghor. Could you please help me with this?`);
+    const waLink = `https://wa.me/916291721742?text=${waText}`;
+
+    /* ── Build the page content ── */
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'pd-img-wrap fade-in visible';
+    imgWrap.innerHTML = `
+      <div class="pd-img-skeleton" id="imgSkeleton"></div>
+      <img id="pdImg" src="${escHtml(img)}" alt="${escHtml(name)}" loading="eager" />
+      ${cat ? `<span class="pd-badge">${escHtml(cat)}</span>` : ''}
+    `;
+
+    const details = document.createElement('div');
+    details.className = 'pd-details fade-in visible';
+    details.innerHTML = `
+      ${cat ? `<p class="pd-eyebrow">${escHtml(cat)}</p>` : ''}
+      <h1 class="pd-name">${escHtml(name)}</h1>
+      <p class="pd-desc">${escHtml(desc).replace(/\n/g, '<br />')}</p>
+      <hr class="pd-divider" />
+      <p class="pd-price">${escHtml(price)}</p>
+      <div class="pd-actions">
+        <button class="btn btn-primary" id="wishlistBtn">
+          <span id="heartIcon">${isWishlisted() ? '♥' : '♡'}</span>
+          <span id="wishlistLabel">${isWishlisted() ? 'Saved' : 'Add to Wishlist'}</span>
+        </button>
+        <button class="btn btn-outline" id="shareBtn">
+          <span aria-hidden="true">↗</span> Share
+        </button>
+      </div>
+      <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="pd-whatsapp" aria-label="Enquire on WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.121 1.526 5.855L.057 23.427a.5.5 0 0 0 .624.602l5.675-1.488A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.9a9.891 9.891 0 0 1-5.031-1.375l-.36-.214-3.713.974.99-3.62-.235-.372A9.865 9.865 0 0 1 2.1 12C2.1 6.527 6.527 2.1 12 2.1S21.9 6.527 21.9 12 17.473 21.9 12 21.9z"/></svg>
+        Enquire on WhatsApp
+      </a>
+    `;
+
+    pdInner.appendChild(imgWrap);
+    pdInner.appendChild(details);
+
+    /* Hide skeleton once image loads */
+    const pdImg    = document.getElementById('pdImg');
+    const skeleton = document.getElementById('imgSkeleton');
+    pdImg.addEventListener('load',  () => { if (skeleton) skeleton.style.display = 'none'; });
+    pdImg.addEventListener('error', () => {
+      if (skeleton) skeleton.style.display = 'none';
+      pdImg.style.display = 'none';
+    });
+
+    /* ── Wishlist button ── */
+    document.getElementById('wishlistBtn').addEventListener('click', function () {
+      let list = getWishlist();
+      const heart = document.getElementById('heartIcon');
+      const label = document.getElementById('wishlistLabel');
+
+      if (isWishlisted()) {
+        list = list.filter(i => i.name !== name);
+        heart.textContent = '♡';
+        label.textContent = 'Add to Wishlist';
+        this.classList.remove('wishlisted');
+        showToast('Removed from wishlist');
+      } else {
+        list.push({ name, price, img });
+        heart.textContent = '♥';
+        label.textContent = 'Saved';
+        this.classList.add('wishlisted');
+        showToast('✦ Added to wishlist!');
+      }
+      saveWishlist(list);
+
+      /* Update nav count */
+      const countEl = document.getElementById('wishlistCount');
+      if (countEl) {
+        const n = list.length;
+        if (n > 0) { countEl.textContent = n; countEl.removeAttribute('hidden'); }
+        else         countEl.setAttribute('hidden', '');
+      }
+    });
+
+    /* ── Share button ── */
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const shareData = {
+        title: `${name} – Ruma's Sajghor`,
+        text:  `Check out ${name} (${price}) at Ruma's Sajghor – Dress Your Story!`,
+        url:   location.href,
+      };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch {}
+      } else {
+        const text = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast('✓ Link copied!');
+        } catch {
+          alert(`Share this item:\n\n${text}`);
+        }
+      }
+    });
+
+    /* ── Toast helper ── */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    /* ── Escape HTML ── */
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+  })();
+  </script>
+
+</body>
+</html>

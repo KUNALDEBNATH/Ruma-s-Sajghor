@@ -151,61 +151,23 @@ function initCategoryFilter() {
 
 
 /* ============================================================
-   7. PRODUCT MODAL
+   7. PRODUCT DETAIL PAGE (replaces modal – opens product.html)
    ============================================================ */
 function initProductModals() {
-  const overlay    = document.getElementById('modalOverlay');
-  const closeBtn   = document.getElementById('modalClose');
-  const modalImg   = document.getElementById('modalImg');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalDesc  = document.getElementById('modalDesc');
-  const modalPrice = document.getElementById('modalPrice');
-  const modalBadge = document.getElementById('modalBadge');
-  const modalCat   = document.getElementById('modalCat');
+  // Detect the current page filename to pass as 'from' param
+  const fromPage = location.pathname.split('/').pop() || 'index.html';
 
-  if (!overlay) return;
-
-  // Open modal
   document.querySelectorAll('.view-details').forEach(btn => {
     btn.addEventListener('click', () => {
       const { name, desc, price, img, cat } = btn.dataset;
-
-      modalImg.src         = img;
-      modalImg.alt         = name;
-      modalTitle.textContent = name;
-      modalDesc.textContent  = desc;
-      modalPrice.textContent = price;
-      modalBadge.textContent = cat;
-      modalCat.textContent   = cat;
-
-      // Reset wishlist button
-      const wishlistBtn = document.getElementById('wishlistBtn');
-      if (wishlistBtn) {
-        wishlistBtn.innerHTML = '<span class="heart-icon" aria-hidden="true">♡</span> Add to Wishlist';
-        wishlistBtn.classList.remove('wishlisted');
-      }
-
-      overlay.removeAttribute('hidden');
-      document.body.style.overflow = 'hidden';
-      closeBtn.focus();
+      const params = new URLSearchParams({ name, desc, price, img, cat, from: fromPage });
+      window.location.href = 'product.html?' + params.toString();
     });
   });
 
-  // Close modal
-  function closeModal() {
-    overlay.setAttribute('hidden', '');
-    document.body.style.overflow = '';
-  }
-
-  closeBtn.addEventListener('click', closeModal);
-
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !overlay.hasAttribute('hidden')) closeModal();
-  });
+  // Keep modal overlay hidden in case it exists in HTML (no-op guard)
+  const overlay = document.getElementById('modalOverlay');
+  if (overlay) overlay.setAttribute('hidden', '');
 }
 
 
