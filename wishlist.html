@@ -378,8 +378,16 @@
     const STORAGE_KEY = 'sajghor_wishlist';
 
     function getWishlist() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-      catch { return []; }
+      try {
+        const list = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        // Self-heal: drop any blank/ghost entries (no name or no img) that
+        // may have been added by a previous bug, and persist the cleanup.
+        const clean = list.filter(i => i && i.name && i.name.trim() && i.img && i.img.trim());
+        if (clean.length !== list.length) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+        }
+        return clean;
+      } catch { return []; }
     }
 
     function saveWishlist(list) {
@@ -453,17 +461,21 @@
       }
     }
 
+    function updateBadge(count) {
+      if (count > 0) {
+        countBadge.textContent = String(count);
+        countBadge.removeAttribute('hidden');
+      } else {
+        countBadge.setAttribute('hidden', '');
+        countBadge.textContent = '0';
+      }
+    }
+
     function render() {
       const list = getWishlist();
       grid.innerHTML = '';
 
-      // Nav badge
-      if (list.length > 0) {
-        countBadge.textContent = list.length;
-        countBadge.removeAttribute('hidden');
-      } else {
-        countBadge.setAttribute('hidden', '');
-      }
+      updateBadge(list.length);
 
       if (list.length === 0) {
         emptyEl.removeAttribute('hidden');
@@ -490,7 +502,7 @@
           </div>
         `;
         card.querySelector('.wl-remove-btn').addEventListener('click', () => {
-          let l = getWishlist().filter(i => i.name !== item.name);
+          let l = getWishlist().filter(i => i.name !== item.name || i.img !== item.img);
           saveWishlist(l);
           render();
         });
@@ -509,6 +521,13 @@
     shareAllBtn.addEventListener('click', shareWishlist);
 
     render();
+
+    // Force a fresh render when the page is restored from the browser's
+    // back/forward cache (bfcache) — otherwise a stale DOM (with an old
+    // badge count) can briefly show until a manual refresh.
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) render();
+    });
   </script>
 </body>
 </html>

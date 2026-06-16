@@ -157,11 +157,29 @@ function initProductModals() {
   // Detect the current page filename to pass as 'from' param
   const fromPage = location.pathname.split('/').pop() || 'index.html';
 
+  function goToProduct(btn) {
+    const { name, desc, price, img, cat } = btn.dataset;
+    const params = new URLSearchParams({ name, desc, price, img, cat, from: fromPage });
+    window.location.href = 'product.html?' + params.toString();
+  }
+
+  // "View Details" button
   document.querySelectorAll('.view-details').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const { name, desc, price, img, cat } = btn.dataset;
-      const params = new URLSearchParams({ name, desc, price, img, cat, from: fromPage });
-      window.location.href = 'product.html?' + params.toString();
+    btn.addEventListener('click', () => goToProduct(btn));
+  });
+
+  // Whole card clickable (image, name, price, anywhere) — but not the
+  // wishlist heart button, which should just toggle wishlist in place.
+  document.querySelectorAll('.product-card').forEach(card => {
+    const viewBtn = card.querySelector('.view-details');
+    if (!viewBtn) return;
+
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', (e) => {
+      // Ignore clicks on the wishlist heart or the View Details button itself
+      // (View Details has its own listener above; avoid double-navigation).
+      if (e.target.closest('.card-wishlist-btn') || e.target.closest('.view-details')) return;
+      goToProduct(viewBtn);
     });
   });
 
@@ -218,8 +236,12 @@ function initWishlist() {
   const STORAGE_KEY = 'sajghor_wishlist';
 
   function getWishlist() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch { return []; }
+    try {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      const clean = list.filter(i => i && i.name && i.name.trim() && i.img && i.img.trim());
+      if (clean.length !== list.length) localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+      return clean;
+    } catch { return []; }
   }
 
   function saveWishlist(list) {
@@ -264,8 +286,11 @@ function initWishlist() {
   });
 
   // ── Modal "Add to Wishlist" button ───────────────────────
+  // Only attach this if the page has an actual product modal (modalTitle exists).
+  // product.html has its own #wishlistBtn handler and must NOT be double-bound here.
   const modalWishlistBtn = document.getElementById('wishlistBtn');
-  if (modalWishlistBtn) {
+  const modalTitleEl = document.getElementById('modalTitle');
+  if (modalWishlistBtn && modalTitleEl) {
     modalWishlistBtn.addEventListener('click', () => {
       const name  = document.getElementById('modalTitle')?.textContent || '';
       const price = document.getElementById('modalPrice')?.textContent || '';
@@ -307,6 +332,11 @@ function initWishlist() {
 
   syncHearts();
   updateCount();
+
+  // Re-sync wishlist hearts/count if page is restored from bfcache
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) { syncHearts(); updateCount(); }
+  });
 }
 
 

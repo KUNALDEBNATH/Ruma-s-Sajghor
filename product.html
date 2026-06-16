@@ -319,7 +319,14 @@
 
     /* ── Wishlist helpers ── */
     const STORAGE_KEY = 'sajghor_wishlist';
-    function getWishlist()      { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+    function getWishlist() {
+      try {
+        const list = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        const clean = list.filter(i => i && i.name && i.name.trim() && i.img && i.img.trim());
+        if (clean.length !== list.length) localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+        return clean;
+      } catch { return []; }
+    }
     function saveWishlist(list) { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
     function isWishlisted()     { return getWishlist().some(i => i.name === name); }
 
@@ -333,7 +340,7 @@
     })();
 
     /* ── WhatsApp link ── */
-    const waText = encodeURIComponent(`Hi! I'm interested in "${name}" (${price}) from Ruma's Sajghor. Could you please help me with this?`);
+    const waText = encodeURIComponent(`Hi! I'm interested in "${name}" (${price}) from Ruma's Sajghor. Could you please help me with this?\n${location.href}`);
     const waLink = `https://wa.me/916291721742?text=${waText}`;
 
     /* ── Build the page content ── */
