@@ -339,8 +339,10 @@
       else         el.setAttribute('hidden', '');
     })();
 
-    /* ── WhatsApp link ── */
-    const waText = encodeURIComponent(`Hi! I'm interested in "${name}" (${price}) from Ruma's Sajghor. Could you please help me with this?\n${location.href}`);
+    /* ── WhatsApp link (use a SHORT url, without the long desc param) ── */
+    const shortParams = new URLSearchParams({ name, price, img, cat, from });
+    const shortUrl = `${location.origin}${location.pathname}?${shortParams.toString()}`;
+    const waText = encodeURIComponent(`Hi! I'm interested in "${name}" (${price}) from Ruma's Sajghor. Could you please help me with this?\n${shortUrl}`);
     const waLink = `https://wa.me/916291721742?text=${waText}`;
 
     /* ── Build the page content ── */
@@ -357,7 +359,7 @@
     details.innerHTML = `
       ${cat ? `<p class="pd-eyebrow">${escHtml(cat)}</p>` : ''}
       <h1 class="pd-name">${escHtml(name)}</h1>
-      <p class="pd-desc">${escHtml(desc).replace(/\n/g, '<br />')}</p>
+      ${desc ? `<p class="pd-desc">${escHtml(desc).replace(/\n/g, '<br />')}</p>` : ''}
       <hr class="pd-divider" />
       <p class="pd-price">${escHtml(price)}</p>
       <div class="pd-actions">
@@ -422,7 +424,7 @@
       const shareData = {
         title: `${name} – Ruma's Sajghor`,
         text:  `Check out ${name} (${price}) at Ruma's Sajghor – Dress Your Story!`,
-        url:   location.href,
+        url:   shortUrl,
       };
       if (navigator.share) {
         try { await navigator.share(shareData); } catch {}
